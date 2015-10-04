@@ -20,3 +20,4 @@ This makes the algorithm fast but it's still shitty as it fails when you rotate 
     
 I'm not sure any of this made any sense to you so here's this diagram that will make it all really easy to understand... I hope.
  
+![Algorithm diagram](https://raw.githubusercontent.com/mc-jesus/face_detect_n_track/master/image/img.png)
