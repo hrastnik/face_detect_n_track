@@ -1,3 +1,5 @@
+# [Youtube video](https://youtu.be/kvw71029A1Q)
+
 # Head detection and real time tracking
 
 I've recently been woriking on a project which required head tracking. It ran on Android so it had to be efficient in order to run fast and smooth on mobile devices.
@@ -20,4 +22,4 @@ This makes the algorithm fast but it's still shitty as it fails when you rotate 
     
 I'm not sure any of this made any sense to you so here's this diagram that will make it all really easy to understand... I hope.
  
-![Algorithm diagram](https://raw.githubusercontent.com/mc-jesus/face_detect_n_track/master/image/img.png)
+[![Algorithm diagram](https://raw.githubusercontent.com/mc-jesus/face_detect_n_track/master/image/img.png)](https://youtu.be/kvw71029A1Q)
