@@ -2,7 +2,7 @@
 #include <iostream>
 #include <opencv2\imgproc.hpp>
 
-const double		VideoFaceDetector::TICK_FREQUENCY = cv::getTickFrequency();
+const double VideoFaceDetector::TICK_FREQUENCY = cv::getTickFrequency();
 
 VideoFaceDetector::VideoFaceDetector(const std::string cascadeFilePath, cv::VideoCapture &videoCapture)
 {
@@ -15,7 +15,7 @@ void VideoFaceDetector::setVideoCapture(cv::VideoCapture &videoCapture)
 	m_videoCapture = &videoCapture;
 }
 
-cv::VideoCapture *VideoFaceDetector::videoCapture()
+cv::VideoCapture *VideoFaceDetector::videoCapture() const
 {
 	return m_videoCapture;
 }
@@ -35,12 +35,22 @@ void VideoFaceDetector::setFaceCascade(const std::string cascadeFilePath)
 	}
 }
 
-cv::CascadeClassifier *VideoFaceDetector::faceCascade() 
+cv::CascadeClassifier *VideoFaceDetector::faceCascade() const
 {
 	return m_faceCascade;
 }
 
-cv::Rect VideoFaceDetector::face() 
+void VideoFaceDetector::setResizedWidth(const int width)
+{
+	m_resizedWidth = std::max(width, 1);
+}
+
+int VideoFaceDetector::resizedWidth() const
+{
+	return m_resizedWidth;
+}
+
+cv::Rect VideoFaceDetector::face() const
 {
 	cv::Rect faceRect = m_trackedFace;
 	faceRect.x = (int)(faceRect.x / m_scale);
@@ -50,17 +60,17 @@ cv::Rect VideoFaceDetector::face()
 	return faceRect;
 }
 
-cv::Point VideoFaceDetector::facePosition()
+cv::Point VideoFaceDetector::facePosition() const
 {
 	return m_facePosition;
 }
 
-void VideoFaceDetector::setTemplateMatchingMaxDuration(double s) 
+void VideoFaceDetector::setTemplateMatchingMaxDuration(double s)
 {
 	m_templateMatchingMaxDuration = s;
 }
 
-double VideoFaceDetector::templateMatchingMaxDuration()
+double VideoFaceDetector::templateMatchingMaxDuration() const
 {
 	return m_templateMatchingMaxDuration;
 }
@@ -72,7 +82,7 @@ VideoFaceDetector::~VideoFaceDetector()
 	}
 }
 
-cv::Rect VideoFaceDetector::doubleRectSize(cv::Rect &inputRect, cv::Rect &frameSize)
+cv::Rect VideoFaceDetector::doubleRectSize(const cv::Rect &inputRect, const cv::Rect &frameSize) const
 {
 	cv::Rect outputRect;
 	// Double rect size
@@ -103,14 +113,14 @@ cv::Rect VideoFaceDetector::doubleRectSize(cv::Rect &inputRect, cv::Rect &frameS
 	return outputRect;
 }
 
-cv::Point VideoFaceDetector::centerOfRect(cv::Rect rect)
+cv::Point VideoFaceDetector::centerOfRect(const cv::Rect &rect) const
 {
 	return cv::Point(rect.x + rect.width / 2, rect.y + rect.height / 2);
 }
 
-cv::Rect VideoFaceDetector::biggestFace(std::vector<cv::Rect> &faces)
+cv::Rect VideoFaceDetector::biggestFace(std::vector<cv::Rect> &faces) const
 {
-	assert (!faces.empty());
+	assert(!faces.empty());
 
 	cv::Rect *biggest = &faces[0];
 	for (auto &face : faces) {
@@ -120,10 +130,10 @@ cv::Rect VideoFaceDetector::biggestFace(std::vector<cv::Rect> &faces)
 	return *biggest;
 }
 
-/* 
- * Face template is small patch in the middle of detected face.
- */
-cv::Mat VideoFaceDetector::getFaceTemplate(cv::Mat &frame, cv::Rect face) 
+/*
+* Face template is small patch in the middle of detected face.
+*/
+cv::Mat VideoFaceDetector::getFaceTemplate(const cv::Mat &frame, cv::Rect face)
 {
 	face.x += face.width / 4;
 	face.y += face.height / 4;
@@ -134,7 +144,7 @@ cv::Mat VideoFaceDetector::getFaceTemplate(cv::Mat &frame, cv::Rect face)
 	return faceTemplate;
 }
 
-void VideoFaceDetector::detectFaceAllSizes(cv::Mat &frame)
+void VideoFaceDetector::detectFaceAllSizes(const cv::Mat &frame)
 {
 	// Minimum face size is 1/5th of screen height
 	// Maximum face size is 2/3rds of screen height
@@ -161,7 +171,7 @@ void VideoFaceDetector::detectFaceAllSizes(cv::Mat &frame)
 	m_facePosition.y = (int)(m_facePosition.y / m_scale);
 }
 
-void VideoFaceDetector::detectFaceAroundRoi(cv::Mat &frame)
+void VideoFaceDetector::detectFaceAroundRoi(const cv::Mat &frame)
 {
 	// Detect faces sized +/-20% off biggest face in previous search
 	m_faceCascade->detectMultiScale(frame(m_faceRoi), m_allFaces, 1.1, 3, 0,
@@ -200,7 +210,7 @@ void VideoFaceDetector::detectFaceAroundRoi(cv::Mat &frame)
 	m_facePosition.y = (int)(m_facePosition.y / m_scale);
 }
 
-void VideoFaceDetector::detectFacesTemplateMatching(cv::Mat &frame)
+void VideoFaceDetector::detectFacesTemplateMatching(const cv::Mat &frame)
 {
 	// Calculate duration of template matching
 	m_templateMatchingCurrentTime = cv::getTickCount();
@@ -230,7 +240,7 @@ void VideoFaceDetector::detectFacesTemplateMatching(cv::Mat &frame)
 	//m_trackedFace = cv::Rect(maxLoc.x, maxLoc.y, m_trackedFace.width, m_trackedFace.height);
 	m_trackedFace = cv::Rect(minLoc.x, minLoc.y, m_faceTemplate.cols, m_faceTemplate.rows);
 	m_trackedFace = doubleRectSize(m_trackedFace, cv::Rect(0, 0, frame.cols, frame.rows));
-	
+
 	// Get new face template
 	m_faceTemplate = getFaceTemplate(frame, m_trackedFace);
 
@@ -243,16 +253,16 @@ void VideoFaceDetector::detectFacesTemplateMatching(cv::Mat &frame)
 	m_facePosition.y = (int)(m_facePosition.y / m_scale);
 }
 
-cv::Point VideoFaceDetector::getFrameAndDetect(cv::Mat &frame) 
+cv::Point VideoFaceDetector::getFrameAndDetect(cv::Mat &frame)
 {
-	*m_videoCapture >> (frame);
+	*m_videoCapture >> frame;
 
-	// Scale frame to 320px width - keep aspect ratio
-	m_scale = 320.0 / frame.cols;
-	cv::Size downscaledFrameSize = cv::Size((int)(m_scale*frame.cols), (int)(m_scale*frame.rows));
+	// Downscale frame to m_resizedWidth width - keep aspect ratio
+	m_scale = (double) std::min(m_resizedWidth, frame.cols) / frame.cols;
+	cv::Size resizedFrameSize = cv::Size((int)(m_scale*frame.cols), (int)(m_scale*frame.rows));
 
 	cv::Mat resizedFrame;
-	cv::resize(frame, resizedFrame, downscaledFrameSize);
+	cv::resize(frame, resizedFrame, resizedFrameSize);
 
 	if (!m_foundFace)
 		detectFaceAllSizes(resizedFrame); // Detect using cascades over whole image

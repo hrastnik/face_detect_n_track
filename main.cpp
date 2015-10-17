@@ -1,11 +1,9 @@
 #include <opencv2\highgui\highgui.hpp>
-#include <opencv2\objdetect\objdetect.hpp>
+//#include <opencv2\objdetect\objdetect.hpp>
 #include <opencv2\imgproc\imgproc.hpp>
-#include <opencv2\video\tracking.hpp>
+//#include <opencv2\video\tracking.hpp>
 
 #include "VideoFaceDetector.h"
-
-#include <iostream>
 
 const cv::String	WINDOW_NAME("Camera video");
 const cv::String	CASCADE_FILE("haarcascade_frontalface_default.xml");
@@ -16,10 +14,10 @@ int main(int argc, char** argv)
 	cv::VideoCapture camera(0);
 	//cv::VideoCapture camera("D:\\video.mp4");
 	if (!camera.isOpened()) {
-		std::cout << "Error getting camera...\n";
+		fprintf(stderr, "Error getting camera...\n");
 		exit(1);
 	}
-	
+
 	cv::namedWindow(WINDOW_NAME, cv::WINDOW_KEEPRATIO | cv::WINDOW_AUTOSIZE);
 
 	VideoFaceDetector detector(CASCADE_FILE, camera);
@@ -32,12 +30,12 @@ int main(int argc, char** argv)
 		auto end = cv::getCPUTickCount();
 
 		time_per_frame = (end - start) / cv::getTickFrequency();
-		fps = (3 * fps + (1 / time_per_frame)) / 4;
+		fps = (15 * fps + (1 / time_per_frame)) / 16;
 
 		printf("Time per frame: %3.3f\tFPS: %3.3f\n", time_per_frame, fps);
-		
+
 		cv::rectangle(frame, detector.face(), cv::Scalar(255, 0, 0));
-		
+
 		cv::imshow(WINDOW_NAME, frame);
 		if (cv::waitKey(25) == 27) break;
 	}

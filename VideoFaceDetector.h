@@ -13,13 +13,15 @@ public:
 	cv::Point				getFrameAndDetect(cv::Mat &frame);
 	cv::Point				operator>>(cv::Mat &frame);
 	void					setVideoCapture(cv::VideoCapture &videoCapture);
-	cv::VideoCapture		*videoCapture();
+	cv::VideoCapture		*videoCapture() const;
 	void					setFaceCascade(const std::string cascadeFilePath);
-	cv::CascadeClassifier	*faceCascade();
-	cv::Rect				face();
-	cv::Point				facePosition();
+	cv::CascadeClassifier	*faceCascade() const;
+	void					setResizedWidth(const int width);
+	int						resizedWidth() const;
+	cv::Rect				face() const;
+	cv::Point				facePosition() const;
 	void					setTemplateMatchingMaxDuration(double s);
-	double					templateMatchingMaxDuration();
+	double					templateMatchingMaxDuration() const;
 
 private:
 	static const double		TICK_FREQUENCY;
@@ -36,15 +38,16 @@ private:
 	int64					m_templateMatchingCurrentTime = 0;
 	bool					m_foundFace = false;
 	double					m_scale;
+	int						m_resizedWidth = 320;
 	cv::Point				m_facePosition;
 	double					m_templateMatchingMaxDuration = 3;
 
-	cv::Rect	doubleRectSize(cv::Rect &inputRect, cv::Rect &frameSize);
-	cv::Rect	biggestFace(std::vector<cv::Rect> &faces);
-	cv::Point	centerOfRect(cv::Rect rect);
-	cv::Mat		getFaceTemplate(cv::Mat &frame, cv::Rect face);
-	void		detectFaceAllSizes(cv::Mat &frame);
-	void		detectFaceAroundRoi(cv::Mat &frame);
-	void		detectFacesTemplateMatching(cv::Mat &frame);
+	cv::Rect	doubleRectSize(const cv::Rect &inputRect, const cv::Rect &frameSize) const;
+	cv::Rect	biggestFace(std::vector<cv::Rect> &faces) const;
+	cv::Point	centerOfRect(const cv::Rect &rect) const;
+	cv::Mat		getFaceTemplate(const cv::Mat &frame, cv::Rect face);
+	void		detectFaceAllSizes(const cv::Mat &frame);
+	void		detectFaceAroundRoi(const cv::Mat &frame);
+	void		detectFacesTemplateMatching(const cv::Mat &frame);
 };
 
