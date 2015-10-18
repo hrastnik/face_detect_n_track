@@ -7,7 +7,7 @@ const double VideoFaceDetector::TICK_FREQUENCY = cv::getTickFrequency();
 VideoFaceDetector::VideoFaceDetector(const std::string cascadeFilePath, cv::VideoCapture &videoCapture)
 {
     setFaceCascade(cascadeFilePath);
-    m_videoCapture = &videoCapture;
+    setVideoCapture(videoCapture);
 }
 
 void VideoFaceDetector::setVideoCapture(cv::VideoCapture &videoCapture)
@@ -68,7 +68,7 @@ cv::Point VideoFaceDetector::facePosition() const
     return facePos;
 }
 
-void VideoFaceDetector::setTemplateMatchingMaxDuration(double s)
+void VideoFaceDetector::setTemplateMatchingMaxDuration(const double s)
 {
     m_templateMatchingMaxDuration = s;
 }

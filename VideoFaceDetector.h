@@ -13,14 +13,14 @@ public:
     cv::Point               getFrameAndDetect(cv::Mat &frame);
     cv::Point               operator>>(cv::Mat &frame);
     void                    setVideoCapture(cv::VideoCapture &videoCapture);
-    cv::VideoCapture        *videoCapture() const;
+    cv::VideoCapture*       videoCapture() const;
     void                    setFaceCascade(const std::string cascadeFilePath);
-    cv::CascadeClassifier   *faceCascade() const;
+    cv::CascadeClassifier*  faceCascade() const;
     void                    setResizedWidth(const int width);
     int                     resizedWidth() const;
     cv::Rect                face() const;
     cv::Point               facePosition() const;
-    void                    setTemplateMatchingMaxDuration(double s);
+    void                    setTemplateMatchingMaxDuration(const double s);
     double                  templateMatchingMaxDuration() const;
 
 private:

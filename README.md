@@ -1,5 +1,32 @@
 # [Youtube video](https://youtu.be/lkFBWUjwDl8)
 
+# Usage
+
+First you need to create a VideoCapture object that you'll use as a source. Then pass the path to your cascade file along with the VideoCapture object to the VideoFaceDetector.
+
+    cv::VideoCapture camera(0);
+    if (!camera.isOpened()) {
+        fprintf(stderr, "Error getting camera...\n");
+        exit(1);
+    }
+    VideoFaceDetector detector(CASCADE_FILE, camera);
+    
+Now you can use your VideoFaceDetector object just like a regular VideoCapture object to get frames. It will automatically detect a face in the frame which you can access with VideoFaceDetector::face() and VideoFaceDetector::facePosition()
+
+    cv::Mat frame;
+    detector >> frame; // same as detector.getFrameAndDetect(frame);
+    
+    cv::Rect face = detector.face();
+    cv::Point facePos = detector.facePosition();
+    
+You can change the VideoCapture object the detector is hooked to with VideoFaceDetector::setVideoCapture(cv::VideoCapture &videoCapture) and retrieve it with VideoFaceDetector::videoCapture().
+
+You can change the cascade file with VideoFaceDetector::setFaceCascade(const std::string cascadeFilePath) and retrieve the cascade classifier with VideoFaceDetector::faceCascade().
+
+You can change the size to which the detector resizes the frames internally with VideoFaceDetector::setResizedWidth() and retrieve it with VideoFaceDetector::resizedWidth(). This can speed up the detection but the tradeoff is precision. The default setting is 320px.
+
+You can change the template matching max duration with VideoFaceDetector::setTemplateMatchingMaxDuration(const double s) and retrieve it with VideoFaceDetector::templateMatchingMaxDuration(). The default value is 3 seconds. This is the max time the algorithm tracks using template matching and after this time the algorithm starts tracking in the whole image again. See algorithm description for more details.
+ 
 # Head detection and real time tracking
 
 I've recently been woriking on a project which required head tracking. It ran on Android so it had to be efficient in order to run fast and smooth on mobile devices.
