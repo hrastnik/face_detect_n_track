@@ -221,7 +221,16 @@ void VideoFaceDetector::detectFacesTemplateMatching(const cv::Mat &frame)
         m_foundFace = false;
         m_templateMatchingRunning = false;
         m_templateMatchingStartTime = m_templateMatchingCurrentTime = 0;
+		return;
     }
+
+	// Edge case when face exits frame while 
+	if (m_faceTemplate.rows * m_faceTemplate.cols == 0) {
+		m_foundFace = false;
+		m_templateMatchingRunning = false;
+		m_templateMatchingStartTime = m_templateMatchingCurrentTime = 0;
+		return;
+	}
 
     // Template matching with last known face 
     //cv::matchTemplate(frame(m_faceRoi), m_faceTemplate, m_matchingResult, CV_TM_CCOEFF);
