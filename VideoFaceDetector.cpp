@@ -225,7 +225,7 @@ void VideoFaceDetector::detectFacesTemplateMatching(const cv::Mat &frame)
     }
 
 	// Edge case when face exits frame while 
-	if (m_faceTemplate.rows * m_faceTemplate.cols == 0) {
+	if (m_faceTemplate.rows * m_faceTemplate.cols == 0 || m_faceTemplate.rows <= 1 || m_faceTemplate.cols <= 1) {
 		m_foundFace = false;
 		m_templateMatchingRunning = false;
 		m_templateMatchingStartTime = m_templateMatchingCurrentTime = 0;
