@@ -50,6 +50,11 @@ int VideoFaceDetector::resizedWidth() const
     return m_resizedWidth;
 }
 
+bool VideoFaceDetector::isFaceFound() const
+{
+	return m_foundFace;
+}
+
 cv::Rect VideoFaceDetector::face() const
 {
     cv::Rect faceRect = m_trackedFace;
@@ -221,6 +226,8 @@ void VideoFaceDetector::detectFacesTemplateMatching(const cv::Mat &frame)
         m_foundFace = false;
         m_templateMatchingRunning = false;
         m_templateMatchingStartTime = m_templateMatchingCurrentTime = 0;
+		m_facePosition.x = m_facePosition.y = 0;
+		m_trackedFace.x = m_trackedFace.y = m_trackedFace.width = m_trackedFace.height = 0;
 		return;
     }
 
@@ -229,6 +236,8 @@ void VideoFaceDetector::detectFacesTemplateMatching(const cv::Mat &frame)
 		m_foundFace = false;
 		m_templateMatchingRunning = false;
 		m_templateMatchingStartTime = m_templateMatchingCurrentTime = 0;
+		m_facePosition.x = m_facePosition.y = 0;
+		m_trackedFace.x = m_trackedFace.y = m_trackedFace.width = m_trackedFace.height = 0;
 		return;
 	}
 

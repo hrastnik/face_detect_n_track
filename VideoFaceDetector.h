@@ -18,6 +18,7 @@ public:
     cv::CascadeClassifier*  faceCascade() const;
     void                    setResizedWidth(const int width);
     int                     resizedWidth() const;
+	bool					isFaceFound() const;
     cv::Rect                face() const;
     cv::Point               facePosition() const;
     void                    setTemplateMatchingMaxDuration(const double s);
